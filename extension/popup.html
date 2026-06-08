@@ -2,65 +2,163 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ClipNote</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { width: 320px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fafafa; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 300px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #fff;
+      color: #18181b;
+    }
 
-    .header { background: #18181b; padding: 14px 16px; display: flex; align-items: center; gap: 10px; }
-    .logo { width: 28px; height: 28px; background: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
-    .title { color: #fff; font-size: 15px; font-weight: 700; letter-spacing: -0.3px; }
+    .header {
+      background: #18181b;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo { font-size: 18px; }
+    .app-name { color: #fff; font-size: 15px; font-weight: 700; letter-spacing: -0.3px; }
 
     .body { padding: 16px; }
 
-    .status { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fff; border: 1px solid #e4e4e7; border-radius: 10px; margin-bottom: 12px; font-size: 12px; color: #52525b; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; background: #a1a1aa; flex-shrink: 0; }
-    .dot.connected { background: #22c55e; }
+    /* Status pill */
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: #f4f4f5;
+      border-radius: 10px;
+      margin-bottom: 14px;
+      font-size: 12px;
+      color: #52525b;
+    }
+    .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #d4d4d8;
+      flex-shrink: 0;
+    }
+    .dot.live { background: #22c55e; animation: pulse 2s infinite; }
     .dot.error { background: #ef4444; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
 
-    label { display: block; font-size: 11px; font-weight: 600; color: #71717a; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-    input { width: 100%; border: 1px solid #e4e4e7; border-radius: 8px; padding: 8px 10px; font-size: 13px; outline: none; transition: border-color 0.15s; }
+    /* Form */
+    label { display: block; font-size: 11px; font-weight: 600; color: #71717a; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+    input {
+      width: 100%;
+      border: 1.5px solid #e4e4e7;
+      border-radius: 8px;
+      padding: 8px 11px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s;
+      color: #18181b;
+    }
     input:focus { border-color: #18181b; }
 
-    .btn { width: 100%; margin-top: 10px; padding: 9px; background: #18181b; color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
-    .btn:hover { background: #27272a; }
-    .btn.secondary { background: #f4f4f5; color: #18181b; }
-    .btn.secondary:hover { background: #e4e4e7; }
+    .btn {
+      width: 100%;
+      margin-top: 10px;
+      padding: 9px;
+      background: #18181b;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn:hover:not(:disabled) { background: #27272a; }
+    .btn:disabled { background: #d4d4d8; cursor: default; }
+    .btn.ghost {
+      background: #f4f4f5;
+      color: #18181b;
+      margin-top: 8px;
+    }
+    .btn.ghost:hover { background: #e4e4e7; }
 
-    .user-info { font-size: 12px; color: #52525b; padding: 10px 12px; background: #fff; border: 1px solid #e4e4e7; border-radius: 10px; margin-bottom: 10px; }
-    .user-email { font-weight: 600; color: #18181b; }
+    /* Logged-in card */
+    .user-card {
+      background: #f4f4f5;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: #52525b;
+      margin-bottom: 10px;
+    }
+    .user-card strong { color: #18181b; display: block; margin-top: 2px; font-size: 13px; }
 
-    .open-app { display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; }
+    .hint {
+      font-size: 11px;
+      color: #a1a1aa;
+      text-align: center;
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+
+    .sent-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 12px;
+      color: #15803d;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .error-box {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: #dc2626;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
   <div class="header">
-    <div class="logo">✂️</div>
-    <span class="title">ClipNote</span>
+    <span class="logo">✂️</span>
+    <span class="app-name">ClipNote</span>
   </div>
 
   <div class="body">
     <div class="status">
-      <div class="dot" id="status-dot"></div>
-      <span id="status-text">Prüfe Verbindung…</span>
+      <div class="dot" id="dot"></div>
+      <span id="status-text">Prüfe Status…</span>
     </div>
 
+    <!-- Login view -->
     <div id="login-view">
       <label for="email">E-Mail</label>
-      <input type="email" id="email" placeholder="deine@email.de" />
-      <button class="btn" id="login-btn">Magic Link senden</button>
+      <input type="email" id="email" placeholder="deine@email.de" autocomplete="email" />
+      <button class="btn" id="login-btn" disabled>Magic Link senden</button>
+      <div id="sent-box" class="sent-box" style="display:none">
+        ✓ Link gesendet! Klick ihn in deiner Mail —<br/>danach ist die Extension aktiv.
+      </div>
+      <div id="error-box" class="error-box" style="display:none"></div>
     </div>
 
-    <div id="logged-in-view" style="display:none">
-      <div class="user-info">
-        Angemeldet als<br />
-        <span class="user-email" id="user-email-display"></span>
+    <!-- Logged-in view -->
+    <div id="loggedin-view" style="display:none">
+      <div class="user-card">
+        Eingeloggt als<strong id="user-email">–</strong>
       </div>
-      <a href="#" class="btn open-app" id="open-app-btn" target="_blank">
-        App öffnen ↗
+      <a id="open-app" href="https://clipnote-nu.vercel.app" target="_blank">
+        <button class="btn" style="width:100%">App öffnen ↗</button>
       </a>
-      <button class="btn secondary" id="logout-btn" style="margin-top:8px">Abmelden</button>
+      <button class="btn ghost" id="logout-btn">Abmelden</button>
+      <p class="hint">Rechtsklick auf markierten Text<br/>→ „✂️ In ClipNote speichern"</p>
     </div>
   </div>
 

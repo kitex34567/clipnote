@@ -10,14 +10,12 @@ type Props = {
 }
 
 export function AddClipModal({ onAdd, onClose }: Props) {
-  const [content, setContent] = useState('')
+  const [content, setContent]   = useState('')
   const [sourceUrl, setSourceUrl] = useState('')
-  const [tags, setTags] = useState('')
-  const [saving, setSaving] = useState(false)
+  const [tags, setTags]         = useState('')
+  const [saving, setSaving]     = useState(false)
 
-  const isUrl = (str: string) => {
-    try { new URL(str); return true } catch { return false }
-  }
+  const isUrl = (str: string) => { try { new URL(str); return true } catch { return false } }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -33,63 +31,70 @@ export function AddClipModal({ onAdd, onClose }: Props) {
     onClose()
   }
 
+  const inputStyle = {
+    background: 'var(--bg)',
+    border: '1.5px solid var(--border)',
+    color: 'var(--text)',
+    borderRadius: '12px',
+    padding: '10px 14px',
+    fontSize: '14px',
+    width: '100%',
+    outline: 'none',
+    transition: 'border-color 0.15s',
+  }
+
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/30 backdrop-blur-sm">
-      <div className="w-full max-w-lg bg-white rounded-3xl shadow-2xl p-6 animate-in slide-in-from-bottom-4 duration-300">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
+         style={{ background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)' }}>
+      <div className="w-full max-w-lg rounded-3xl shadow-2xl p-6 animate-in slide-in-from-bottom-4 duration-300"
+           style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)' }}>
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-semibold text-zinc-900">Neuer Clip</h2>
-          <button onClick={onClose} className="p-2 rounded-xl hover:bg-zinc-100 text-zinc-500 transition-colors">
-            <X size={18} />
+          <h2 className="text-lg font-black flex items-center gap-2" style={{ color: 'var(--text)' }}>
+            🦆 Neuer Clip
+          </h2>
+          <button onClick={onClose}
+            className="p-2 rounded-xl transition-colors"
+            style={{ background: 'var(--bg-subtle)', color: 'var(--text-muted)' }}>
+            <X size={17} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-1.5">Inhalt *</label>
+            <label className="block text-xs font-bold uppercase tracking-wider mb-1.5"
+                   style={{ color: 'var(--text-muted)' }}>Inhalt *</label>
             <textarea
-              autoFocus
-              value={content}
-              onChange={e => setContent(e.target.value)}
+              autoFocus value={content} onChange={e => setContent(e.target.value)}
               placeholder="Text, URL oder Notiz einfügen…"
-              rows={5}
-              className="w-full rounded-xl border border-zinc-200 px-3.5 py-2.5 text-sm text-zinc-800
-                placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:border-transparent
-                resize-none transition-all"
+              rows={5} style={{ ...inputStyle, resize: 'none' }}
+              onFocus={e => (e.target.style.borderColor = 'var(--accent)')}
+              onBlur={e  => (e.target.style.borderColor = 'var(--border)')}
             />
           </div>
-
           <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-1.5">Quelle (URL)</label>
-            <input
-              type="url"
-              value={sourceUrl}
-              onChange={e => setSourceUrl(e.target.value)}
-              placeholder="https://…"
-              className="w-full rounded-xl border border-zinc-200 px-3.5 py-2.5 text-sm text-zinc-800
-                placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:border-transparent
-                transition-all"
+            <label className="block text-xs font-bold uppercase tracking-wider mb-1.5"
+                   style={{ color: 'var(--text-muted)' }}>Quelle (URL)</label>
+            <input type="url" value={sourceUrl} onChange={e => setSourceUrl(e.target.value)}
+              placeholder="https://…" style={inputStyle}
+              onFocus={e => (e.target.style.borderColor = 'var(--accent)')}
+              onBlur={e  => (e.target.style.borderColor = 'var(--border)')}
             />
           </div>
-
           <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-1.5">Tags (kommagetrennt)</label>
-            <input
-              type="text"
-              value={tags}
-              onChange={e => setTags(e.target.value)}
-              placeholder="arbeit, idee, später lesen"
-              className="w-full rounded-xl border border-zinc-200 px-3.5 py-2.5 text-sm text-zinc-800
-                placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:border-transparent
-                transition-all"
+            <label className="block text-xs font-bold uppercase tracking-wider mb-1.5"
+                   style={{ color: 'var(--text-muted)' }}>Tags (kommagetrennt)</label>
+            <input type="text" value={tags} onChange={e => setTags(e.target.value)}
+              placeholder="arbeit, idee, später lesen" style={inputStyle}
+              onFocus={e => (e.target.style.borderColor = 'var(--accent)')}
+              onBlur={e  => (e.target.style.borderColor = 'var(--border)')}
             />
           </div>
-
-          <button
-            type="submit"
-            disabled={!content.trim() || saving}
-            className="w-full flex items-center justify-center gap-2 bg-zinc-900 hover:bg-zinc-800
-              disabled:bg-zinc-300 text-white font-medium py-2.5 px-4 rounded-xl transition-colors text-sm"
-          >
+          <button type="submit" disabled={!content.trim() || saving}
+            className="w-full flex items-center justify-center gap-2 font-bold py-3 px-4 rounded-xl transition-colors text-sm"
+            style={{
+              background: !content.trim() || saving ? 'var(--bg-subtle)' : 'var(--accent)',
+              color:      !content.trim() || saving ? 'var(--text-muted)' : 'var(--accent-fg)',
+            }}>
             <Plus size={16} />
             {saving ? 'Wird gespeichert…' : 'Clip speichern'}
           </button>

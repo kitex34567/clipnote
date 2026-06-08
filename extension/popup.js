@@ -1,21 +1,26 @@
-const API_BASE = 'http://localhost:3000'
+const SUPABASE_URL  = 'https://jqudjvbvwqrglulbrycq.supabase.co'
+const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpxdWRqdmJ2d3FyZ2x1bGJyeWNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MjQyNTgsImV4cCI6MjA5NjUwMDI1OH0.HeZry8iutYSn9ZxUFNpLfnawrVO155fRwan8Dsn70-A'
 
-const statusDot = document.getElementById('status-dot')
+const dot        = document.getElementById('dot')
 const statusText = document.getElementById('status-text')
-const loginView = document.getElementById('login-view')
-const loggedInView = document.getElementById('logged-in-view')
+const loginView  = document.getElementById('login-view')
+const loggedView = document.getElementById('loggedin-view')
 const emailInput = document.getElementById('email')
-const loginBtn = document.getElementById('login-btn')
-const logoutBtn = document.getElementById('logout-btn')
-const userEmailDisplay = document.getElementById('user-email-display')
-const openAppBtn = document.getElementById('open-app-btn')
+const loginBtn   = document.getElementById('login-btn')
+const logoutBtn  = document.getElementById('logout-btn')
+const sentBox    = document.getElementById('sent-box')
+const errorBox   = document.getElementById('error-box')
+const userEmail  = document.getElementById('user-email')
 
-openAppBtn.href = API_BASE
+// Enable button only when email is filled
+emailInput.addEventListener('input', () => {
+  loginBtn.disabled = !emailInput.value.trim()
+})
 
 async function init() {
-  const { token, userEmail } = await chrome.storage.local.get(['token', 'userEmail'])
-  if (token && userEmail) {
-    showLoggedIn(userEmail)
+  const { accessToken, userEmail: storedEmail } = await chrome.storage.local.get(['accessToken', 'userEmail'])
+  if (accessToken) {
+    showLoggedIn(storedEmail)
   } else {
     showLogin()
   }
@@ -23,53 +28,75 @@ async function init() {
 
 function showLoggedIn(email) {
   loginView.style.display = 'none'
-  loggedInView.style.display = 'block'
-  userEmailDisplay.textContent = email
-  statusDot.className = 'dot connected'
-  statusText.textContent = 'Verbunden — Clips werden live synchronisiert'
+  loggedView.style.display = 'block'
+  userEmail.textContent = email || '–'
+  dot.className = 'dot live'
+  statusText.textContent = 'Live — Clips werden sofort synchronisiert'
 }
 
 function showLogin() {
   loginView.style.display = 'block'
-  loggedInView.style.display = 'none'
-  statusDot.className = 'dot error'
+  loggedView.style.display = 'none'
+  dot.className = 'dot error'
   statusText.textContent = 'Nicht angemeldet'
+}
+
+function showError(msg) {
+  errorBox.textContent = '⚠️ ' + msg
+  errorBox.style.display = 'block'
 }
 
 loginBtn.addEventListener('click', async () => {
   const email = emailInput.value.trim()
   if (!email) return
-  loginBtn.textContent = 'Sende Link…'
+
   loginBtn.disabled = true
+  loginBtn.textContent = 'Sende…'
+  errorBox.style.display = 'none'
 
   try {
-    const res = await fetch(`${API_BASE}/api/auth/magic-link`, {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/otp`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email }),
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+      },
+      body: JSON.stringify({
+        email,
+        create_user: true,
+        options: { emailRedirectTo: 'https://clipnote-nu.vercel.app' },
+      }),
     })
+
     if (res.ok) {
-      statusText.textContent = 'Check deine E-Mails für den Login-Link!'
-      statusDot.className = 'dot connected'
+      sentBox.style.display = 'block'
       loginBtn.textContent = 'Link gesendet ✓'
+    } else {
+      const data = await res.json()
+      showError(data.message ?? 'Unbekannter Fehler')
+      loginBtn.disabled = false
+      loginBtn.textContent = 'Magic Link senden'
     }
-  } catch {
-    loginBtn.textContent = 'Magic Link senden'
+  } catch (err) {
+    showError('Verbindungsfehler')
     loginBtn.disabled = false
-    statusText.textContent = 'Fehler — App erreichbar?'
+    loginBtn.textContent = 'Magic Link senden'
   }
 })
 
 logoutBtn.addEventListener('click', async () => {
-  await chrome.storage.local.remove(['token', 'userEmail'])
-  chrome.runtime.sendMessage({ type: 'SET_TOKEN', token: null })
+  await chrome.storage.local.remove(['accessToken', 'userEmail'])
   showLogin()
+  sentBox.style.display = 'none'
 })
 
-// Listen for token set from auth callback
+// Live-update wenn content.js das Token schreibt (z.B. nach Magic Link)
 chrome.storage.onChanged.addListener((changes) => {
-  if (changes.token?.newValue && changes.userEmail?.newValue) {
-    showLoggedIn(changes.userEmail.newValue)
+  if (changes.accessToken?.newValue) {
+    showLoggedIn(changes.userEmail?.newValue ?? '')
+  }
+  if (changes.accessToken?.newValue === undefined && 'accessToken' in changes) {
+    showLogin()
   }
 })
 

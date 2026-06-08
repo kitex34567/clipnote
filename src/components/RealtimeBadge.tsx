@@ -12,25 +12,19 @@ export function RealtimeBadge() {
         if (s === 'SUBSCRIBED') setStatus('connected')
         else if (s === 'CHANNEL_ERROR' || s === 'TIMED_OUT') setStatus('disconnected')
       })
-
     return () => { supabase.removeChannel(channel) }
   }, [])
 
-  const colors = {
-    connecting: 'bg-yellow-400',
-    connected: 'bg-green-400',
-    disconnected: 'bg-red-400',
-  }
-
-  const labels = {
-    connecting: 'Verbinde…',
-    connected: 'Live',
-    disconnected: 'Offline',
-  }
+  const colors = { connecting: '#eab308', connected: '#22c55e', disconnected: '#ef4444' }
+  const labels = { connecting: 'Verbinde…', connected: 'Live', disconnected: 'Offline' }
 
   return (
-    <div className="flex items-center gap-1.5 text-xs text-zinc-500">
-      <span className={`w-2 h-2 rounded-full ${colors[status]} ${status === 'connected' ? 'animate-pulse' : ''}`} />
+    <div className="flex items-center gap-1.5 text-xs" style={{ color: 'var(--text-muted)' }}>
+      <span className="w-2 h-2 rounded-full"
+            style={{
+              background: colors[status],
+              boxShadow: status === 'connected' ? `0 0 6px ${colors.connected}` : 'none',
+            }} />
       {labels[status]}
     </div>
   )

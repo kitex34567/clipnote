@@ -11,7 +11,7 @@ import { RealtimeBadge } from '@/components/RealtimeBadge'
 import { ThemeToggle } from '@/components/ThemeToggle'
 
 export default function Home() {
-  const { user, loading: authLoading, signInWithEmail, signOut } = useAuth()
+  const { user, loading: authLoading, signInWithEmail, signInWithGoogle, signOut } = useAuth()
   const { clips, loading: clipsLoading, addClip, deleteClip } = useClips(user?.id ?? null)
   const [showModal, setShowModal] = useState(false)
   const [search, setSearch] = useState('')
@@ -36,7 +36,7 @@ export default function Home() {
     )
   }
 
-  if (!user) return <LoginScreen onSignIn={signInWithEmail} />
+  if (!user) return <LoginScreen onSignIn={signInWithEmail} onGoogleSignIn={signInWithGoogle} />
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg)' }}>

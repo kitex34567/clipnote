@@ -2,11 +2,11 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <title>ClipNote</title>
+  <title>Duckit</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      width: 300px;
+      width: 280px;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: #fff;
       color: #18181b;
@@ -14,84 +14,53 @@
 
     .header {
       background: #18181b;
-      padding: 14px 16px;
+      padding: 13px 16px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 9px;
     }
     .logo { font-size: 18px; }
-    .app-name { color: #fff; font-size: 15px; font-weight: 700; letter-spacing: -0.3px; }
+    .app-name { color: #fff; font-size: 15px; font-weight: 800; letter-spacing: -0.3px; }
 
-    .body { padding: 16px; }
+    .body { padding: 14px; }
 
-    /* Status pill */
     .status {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 12px;
+      padding: 8px 11px;
       background: #f4f4f5;
       border-radius: 10px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       font-size: 12px;
       color: #52525b;
     }
-    .dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: #d4d4d8;
-      flex-shrink: 0;
-    }
-    .dot.live { background: #22c55e; animation: pulse 2s infinite; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: #d4d4d8; flex-shrink: 0; }
+    .dot.live  { background: #22c55e; }
     .dot.error { background: #ef4444; }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
-
-    /* Form */
-    label { display: block; font-size: 11px; font-weight: 600; color: #71717a; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
-    input {
-      width: 100%;
-      border: 1.5px solid #e4e4e7;
-      border-radius: 8px;
-      padding: 8px 11px;
-      font-size: 13px;
-      outline: none;
-      transition: border-color 0.15s;
-      color: #18181b;
-    }
-    input:focus { border-color: #18181b; }
 
     .btn {
       width: 100%;
-      margin-top: 10px;
       padding: 9px;
-      background: #18181b;
-      color: #fff;
       border: none;
-      border-radius: 8px;
+      border-radius: 9px;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       transition: background 0.15s;
     }
-    .btn:hover:not(:disabled) { background: #27272a; }
-    .btn:disabled { background: #d4d4d8; cursor: default; }
-    .btn.ghost {
-      background: #f4f4f5;
-      color: #18181b;
-      margin-top: 8px;
-    }
-    .btn.ghost:hover { background: #e4e4e7; }
+    .btn-primary { background: #eab308; color: #000; }
+    .btn-primary:hover { background: #ca8a04; }
+    .btn-ghost { background: #f4f4f5; color: #18181b; margin-top: 8px; }
+    .btn-ghost:hover { background: #e4e4e7; }
 
-    /* Logged-in card */
     .user-card {
-      background: #f4f4f5;
+      background: #fefce8;
+      border: 1px solid #fde68a;
       border-radius: 10px;
       padding: 10px 12px;
       font-size: 12px;
-      color: #52525b;
+      color: #78716c;
       margin-bottom: 10px;
     }
     .user-card strong { color: #18181b; display: block; margin-top: 2px; font-size: 13px; }
@@ -104,32 +73,22 @@
       line-height: 1.5;
     }
 
-    .sent-box {
-      background: #f0fdf4;
-      border: 1px solid #bbf7d0;
-      border-radius: 10px;
-      padding: 12px;
-      font-size: 12px;
-      color: #15803d;
+    .login-box {
       text-align: center;
-      margin-top: 10px;
+      padding: 4px 0 8px;
     }
-
-    .error-box {
-      background: #fef2f2;
-      border: 1px solid #fecaca;
-      border-radius: 10px;
-      padding: 10px 12px;
+    .login-box p {
       font-size: 12px;
-      color: #dc2626;
-      margin-top: 10px;
+      color: #71717a;
+      margin-bottom: 12px;
+      line-height: 1.5;
     }
   </style>
 </head>
 <body>
   <div class="header">
-    <span class="logo">✂️</span>
-    <span class="app-name">ClipNote</span>
+    <span class="logo">🦆</span>
+    <span class="app-name">Duckit</span>
   </div>
 
   <div class="body">
@@ -138,27 +97,22 @@
       <span id="status-text">Prüfe Status…</span>
     </div>
 
-    <!-- Login view -->
+    <!-- Not logged in -->
     <div id="login-view">
-      <label for="email">E-Mail</label>
-      <input type="email" id="email" placeholder="deine@email.de" autocomplete="email" />
-      <button class="btn" id="login-btn" disabled>Magic Link senden</button>
-      <div id="sent-box" class="sent-box" style="display:none">
-        ✓ Link gesendet! Klick ihn in deiner Mail —<br/>danach ist die Extension aktiv.
+      <div class="login-box">
+        <p>Melde dich in der Web-App an — die Extension erkennt dich danach automatisch.</p>
+        <button class="btn btn-primary" id="open-login-btn">🦆 Bei Duckit anmelden</button>
       </div>
-      <div id="error-box" class="error-box" style="display:none"></div>
     </div>
 
-    <!-- Logged-in view -->
+    <!-- Logged in -->
     <div id="loggedin-view" style="display:none">
       <div class="user-card">
         Eingeloggt als<strong id="user-email">–</strong>
       </div>
-      <a id="open-app" href="https://clipnote-nu.vercel.app" target="_blank">
-        <button class="btn" style="width:100%">App öffnen ↗</button>
-      </a>
-      <button class="btn ghost" id="logout-btn">Abmelden</button>
-      <p class="hint">Rechtsklick auf markierten Text<br/>→ „✂️ In ClipNote speichern"</p>
+      <button class="btn btn-primary" id="open-app-btn">App öffnen ↗</button>
+      <button class="btn btn-ghost" id="logout-btn">Abmelden</button>
+      <p class="hint">Text markieren → Rechtsklick<br/>→ „✂️ In Duckit speichern"</p>
     </div>
   </div>
 

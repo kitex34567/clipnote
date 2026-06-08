@@ -9,12 +9,24 @@ export function LoginScreen({ onSignIn }: Props) {
   const [email, setEmail] = useState('')
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    const { error } = await onSignIn(email)
-    if (!error) setSent(true)
+    setErrorMsg('')
+    try {
+      const { error } = await onSignIn(email)
+      if (error) {
+        const msg = (error as { message?: string })?.message ?? 'Unbekannter Fehler'
+        setErrorMsg(msg)
+      } else {
+        setSent(true)
+      }
+    } catch (err) {
+      setErrorMsg('Verbindungsfehler — bitte versuche es erneut.')
+      console.error(err)
+    }
     setLoading(false)
   }
 
@@ -77,6 +89,11 @@ export function LoginScreen({ onSignIn }: Props) {
               {!loading && <ArrowRight size={15} />}
             </button>
           </form>
+        )}
+        {errorMsg && (
+          <p className="text-xs text-red-500 mt-3 bg-red-50 border border-red-200 rounded-xl px-3 py-2 max-w-sm mx-auto">
+            ⚠️ {errorMsg}
+          </p>
         )}
         <p className="text-xs text-zinc-400 mt-3">Kein Passwort. Kein Abo. Einfach loslegen.</p>
       </section>

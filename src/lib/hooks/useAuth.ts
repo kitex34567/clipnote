@@ -25,6 +25,14 @@ export function useAuth() {
     return supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin } })
   }
 
+  const signInWithPassword = async (email: string, password: string) => {
+    return supabase.auth.signInWithPassword({ email, password })
+  }
+
+  const signUp = async (email: string, password: string) => {
+    return supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin } })
+  }
+
   const signInWithGoogle = async () => {
     return supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -34,5 +42,5 @@ export function useAuth() {
 
   const signOut = async () => supabase.auth.signOut()
 
-  return { user, loading, signInWithEmail, signInWithGoogle, signOut }
+  return { user, loading, signInWithEmail, signInWithPassword, signUp, signInWithGoogle, signOut }
 }

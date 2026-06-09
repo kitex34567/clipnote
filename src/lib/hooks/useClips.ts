@@ -67,8 +67,15 @@ export function useClips(userId: string | null) {
   }, [userId])
 
   const deleteClip = useCallback(async (id: string) => {
+    setClips(prev => prev.filter(c => c.id !== id))
     await supabase.from('clips').delete().eq('id', id)
   }, [])
 
-  return { clips, loading, addClip, deleteClip, refetch: fetchClips }
+  const updateClip = useCallback(async (id: string, updates: Partial<Clip>) => {
+    const now = new Date().toISOString()
+    setClips(prev => prev.map(c => c.id === id ? { ...c, ...updates, updated_at: now } : c))
+    await supabase.from('clips').update({ ...updates, updated_at: now }).eq('id', id)
+  }, [])
+
+  return { clips, loading, addClip, deleteClip, updateClip, refetch: fetchClips }
 }

@@ -10,6 +10,10 @@ export type Clip = {
   tags: string[]
   created_at: string
   updated_at: string
+  color?: string | null
+  group_name?: string | null
+  due_date?: string | null
+  calendar_event_id?: string | null
 }
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''

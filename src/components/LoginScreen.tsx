@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Zap, Globe, Smartphone, ArrowRight, Check, Eye, EyeOff } from 'lucide-react'
+import { Zap, Globe, Smartphone, ArrowRight, Check, Eye, EyeOff, Chrome } from 'lucide-react'
 import { ThemeToggle } from './ThemeToggle'
 
 type Mode = 'password' | 'magic' | 'signup'
@@ -14,12 +14,12 @@ type Props = {
 }
 
 export function LoginScreen({ onSignIn, onGoogleSignIn, onPasswordSignIn, onSignUp }: Props) {
-  const [mode, setMode]           = useState<Mode>('password')
-  const [email, setEmail]         = useState('')
-  const [password, setPassword]   = useState('')
-  const [showPw, setShowPw]       = useState(false)
-  const [loading, setLoading]     = useState(false)
-  const [errorMsg, setErrorMsg]   = useState('')
+  const [mode, setMode]             = useState<Mode>('password')
+  const [email, setEmail]           = useState('')
+  const [password, setPassword]     = useState('')
+  const [showPw, setShowPw]         = useState(false)
+  const [loading, setLoading]       = useState(false)
+  const [errorMsg, setErrorMsg]     = useState('')
   const [successMsg, setSuccessMsg] = useState('')
 
   const reset = (m: Mode) => { setMode(m); setErrorMsg(''); setSuccessMsg('') }
@@ -27,7 +27,6 @@ export function LoginScreen({ onSignIn, onGoogleSignIn, onPasswordSignIn, onSign
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true); setErrorMsg(''); setSuccessMsg('')
-
     try {
       if (mode === 'magic') {
         const { error } = await onSignIn(email)
@@ -43,12 +42,11 @@ export function LoginScreen({ onSignIn, onGoogleSignIn, onPasswordSignIn, onSign
         else setSuccessMsg('✅ Account erstellt! Check deine Mails zur Bestätigung.')
       }
     } catch { setErrorMsg('Verbindungsfehler') }
-
     setLoading(false)
   }
 
-  const inputStyle = {
-    background: 'var(--bg-card)', border: '1.5px solid var(--border)',
+  const inp = {
+    background: 'var(--bg-subtle)', border: '1.5px solid var(--border)',
     color: 'var(--text)', borderRadius: '12px', padding: '11px 14px',
     fontSize: '14px', width: '100%', outline: 'none', transition: 'border-color 0.15s',
   }
@@ -57,165 +55,250 @@ export function LoginScreen({ onSignIn, onGoogleSignIn, onPasswordSignIn, onSign
     <div className="min-h-screen" style={{ background: 'var(--bg)' }}>
 
       {/* Nav */}
-      <nav style={{ background: 'var(--nav-bg)', borderBottom: '1px solid var(--border)' }} className="px-6 py-4">
+      <nav style={{ background: 'var(--nav-bg)', borderBottom: '1px solid var(--border)' }} className="px-6 py-4 sticky top-0 z-30 backdrop-blur">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <span className="text-2xl">🦆</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/icon.png" alt="Duckit" width={32} height={32} style={{ borderRadius: 9 }} />
             <span className="font-black text-lg tracking-tight" style={{ color: 'var(--text)' }}>Duckit</span>
           </div>
           <div className="flex items-center gap-4">
-            <a href="#pricing" className="text-sm" style={{ color: 'var(--text-muted)' }}>Preise</a>
+            <a href="#features" className="text-sm hidden sm:block" style={{ color: 'var(--text-muted)' }}>Features</a>
+            <a href="#pricing" className="text-sm hidden sm:block" style={{ color: 'var(--text-muted)' }}>Preise</a>
+            <a href="#apps" className="text-sm hidden sm:block" style={{ color: 'var(--text-muted)' }}>Apps</a>
             <ThemeToggle />
           </div>
         </div>
       </nav>
 
       {/* Hero */}
-      <section className="max-w-3xl mx-auto px-6 pt-16 pb-10 text-center">
-        <div className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full mb-6"
-             style={{ background: 'var(--bg-subtle)', color: 'var(--accent-hover)', border: '1px solid var(--border)' }}>
-          <Zap size={11} /> Realtime-Sync in unter 1 Sekunde
-        </div>
-        <h1 className="text-5xl font-black tracking-tight leading-tight mb-5" style={{ color: 'var(--text)' }}>
-          Duck it away.<br />
-          <span style={{ color: 'var(--accent)' }}>Überall abrufen.</span>
-        </h1>
-        <p className="text-lg leading-relaxed mb-10 max-w-xl mx-auto" style={{ color: 'var(--text-muted)' }}>
-          Markiere Text im Browser, teile Links vom Handy — Duckit speichert alles sofort
-          und synchronisiert es live auf all deinen Geräten.
-        </p>
+      <section className="max-w-5xl mx-auto px-6 pt-20 pb-16 flex flex-col lg:flex-row items-center gap-12">
 
-        {/* Auth Card */}
-        <div className="max-w-sm mx-auto rounded-2xl p-6"
-             style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-
-          {/* Mode Tabs */}
-          <div className="flex rounded-xl p-1 mb-5 gap-1" style={{ background: 'var(--bg-subtle)' }}>
-            {([['password', 'Anmelden'], ['signup', 'Registrieren']] as [Mode, string][]).map(([m, label]) => (
-              <button key={m} onClick={() => reset(m)}
-                className="flex-1 text-sm font-semibold py-2 rounded-lg transition-all"
-                style={{
-                  background: mode === m ? 'var(--bg-card)' : 'transparent',
-                  color: mode === m ? 'var(--text)' : 'var(--text-muted)',
-                  boxShadow: mode === m ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-                }}>
-                {label}
-              </button>
-            ))}
+        {/* Left: copy + auth */}
+        <div className="flex-1 text-center lg:text-left">
+          <div className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full mb-6"
+               style={{ background: 'var(--bg-subtle)', color: 'var(--accent)', border: '1px solid var(--border)' }}>
+            <Zap size={11} /> Realtime-Sync · Alle Geräte · Sofort
           </div>
+          <h1 className="text-5xl font-black tracking-tight leading-tight mb-5" style={{ color: 'var(--text)' }}>
+            Duck it away.<br />
+            <span style={{ color: 'var(--accent)' }}>Überall abrufen.</span>
+          </h1>
+          <p className="text-lg leading-relaxed mb-8 max-w-xl" style={{ color: 'var(--text-muted)' }}>
+            Markiere Text im Browser, teile Links vom Handy, terminiere Notizen im Kalender —
+            Duckit synchronisiert alles live auf all deinen Geräten.
+          </p>
 
-          {/* Google */}
-          <button onClick={onGoogleSignIn} disabled={loading}
-            className="w-full flex items-center justify-center gap-3 font-bold py-3 px-5 rounded-xl transition-all text-sm mb-4"
-            style={{ background: 'var(--bg)', border: '1.5px solid var(--border)', color: 'var(--text)' }}>
-            <svg width="16" height="16" viewBox="0 0 48 48">
-              <path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.5 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.6-.4-3.9z"/>
-              <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.6 19 12 24 12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.5 29.5 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
-              <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.3 35.5 26.8 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.5 16.2 44 24 44z"/>
-              <path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.3-2.4 4.2-4.4 5.5l6.2 5.2C36.9 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z"/>
-            </svg>
-            Mit Google {mode === 'signup' ? 'registrieren' : 'anmelden'}
-          </button>
+          {/* Auth Card */}
+          <div className="max-w-sm mx-auto lg:mx-0 rounded-2xl p-6"
+               style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
 
-          {/* Divider */}
-          <div className="flex items-center gap-3 mb-4">
-            <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
-            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>oder</span>
-            <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
-          </div>
+            <div className="flex rounded-xl p-1 mb-4 gap-1" style={{ background: 'var(--bg-subtle)' }}>
+              {([['password', 'Anmelden'], ['signup', 'Registrieren']] as [Mode, string][]).map(([m, label]) => (
+                <button key={m} onClick={() => reset(m)}
+                  className="flex-1 text-sm font-semibold py-2 rounded-lg transition-all"
+                  style={{
+                    background: mode === m ? 'var(--bg-card)' : 'transparent',
+                    color: mode === m ? 'var(--text)' : 'var(--text-muted)',
+                    boxShadow: mode === m ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                  }}>
+                  {label}
+                </button>
+              ))}
+            </div>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-              placeholder="E-Mail" required style={inputStyle}
-              onFocus={e => (e.target.style.borderColor = 'var(--accent)')}
-              onBlur={e  => (e.target.style.borderColor = 'var(--border)')}
-            />
+            <button onClick={onGoogleSignIn} disabled={loading}
+              className="w-full flex items-center justify-center gap-3 font-bold py-3 px-5 rounded-xl text-sm mb-3"
+              style={{ background: 'var(--bg-subtle)', border: '1.5px solid var(--border)', color: 'var(--text)' }}>
+              <svg width="16" height="16" viewBox="0 0 48 48">
+                <path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.5 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.6-.4-3.9z"/>
+                <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.6 19 12 24 12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.5 29.5 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
+                <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.3 35.5 26.8 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.5 16.2 44 24 44z"/>
+                <path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.3-2.4 4.2-4.4 5.5l6.2 5.2C36.9 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z"/>
+              </svg>
+              Mit Google {mode === 'signup' ? 'registrieren' : 'anmelden'}
+            </button>
 
-            <div className="relative">
-              <input
-                type={showPw ? 'text' : 'password'}
-                value={password} onChange={e => setPassword(e.target.value)}
-                placeholder="Passwort"
-                required={mode !== 'magic'}
-                style={{ ...inputStyle, paddingRight: '42px' }}
+            <div className="flex items-center gap-3 mb-3">
+              <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
+              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>oder</span>
+              <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-2.5">
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+                placeholder="E-Mail" required style={inp}
                 onFocus={e => (e.target.style.borderColor = 'var(--accent)')}
                 onBlur={e  => (e.target.style.borderColor = 'var(--border)')}
               />
-              <button type="button" onClick={() => setShowPw(!showPw)}
-                className="absolute right-3 top-1/2 -translate-y-1/2"
-                style={{ color: 'var(--text-muted)' }}>
-                {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
+              <div className="relative">
+                <input type={showPw ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)}
+                  placeholder="Passwort" required={mode !== 'magic'}
+                  style={{ ...inp, paddingRight: '42px' }}
+                  onFocus={e => (e.target.style.borderColor = 'var(--accent)')}
+                  onBlur={e  => (e.target.style.borderColor = 'var(--border)')}
+                />
+                <button type="button" onClick={() => setShowPw(!showPw)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted)' }}>
+                  {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
+                </button>
+              </div>
+
+              {errorMsg && <p className="text-xs rounded-xl px-3 py-2" style={{ background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca' }}>⚠️ {errorMsg}</p>}
+              {successMsg && <p className="text-xs rounded-xl px-3 py-2" style={{ background: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0' }}>{successMsg}</p>}
+
+              <button type="submit" disabled={loading || !email}
+                className="w-full flex items-center justify-center gap-2 font-bold py-3 rounded-xl text-sm"
+                style={{
+                  background: loading || !email ? 'var(--bg-subtle)' : 'var(--accent)',
+                  color: loading || !email ? 'var(--text-muted)' : '#000',
+                }}>
+                {loading ? 'Bitte warten…' : mode === 'signup' ? 'Account erstellen' : 'Anmelden'}
+                {!loading && <ArrowRight size={15} />}
               </button>
-            </div>
+            </form>
 
-            {errorMsg && (
-              <p className="text-xs rounded-xl px-3 py-2"
-                 style={{ background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca' }}>
-                ⚠️ {errorMsg}
-              </p>
-            )}
-            {successMsg && (
-              <p className="text-xs rounded-xl px-3 py-2"
-                 style={{ background: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0' }}>
-                {successMsg}
-              </p>
-            )}
-
-            <button type="submit" disabled={loading || !email}
-              className="w-full flex items-center justify-center gap-2 font-bold py-3 rounded-xl transition-colors text-sm"
-              style={{
-                background: loading || !email ? 'var(--bg-subtle)' : 'var(--accent)',
-                color: loading || !email ? 'var(--text-muted)' : 'var(--accent-fg)',
-              }}>
-              {loading ? 'Bitte warten…' : mode === 'signup' ? 'Account erstellen' : 'Anmelden'}
-              {!loading && <ArrowRight size={15} />}
+            <button onClick={() => reset(mode === 'magic' ? 'password' : 'magic')}
+              className="w-full text-xs mt-3 py-1" style={{ color: 'var(--text-muted)' }}>
+              {mode === 'magic' ? '← Zurück zum Passwort-Login' : 'Per Magic Link anmelden'}
             </button>
-          </form>
-
-          {/* Magic Link toggle */}
-          <button onClick={() => reset(mode === 'magic' ? 'password' : 'magic')}
-            className="w-full text-xs mt-3 py-1"
-            style={{ color: 'var(--text-muted)' }}>
-            {mode === 'magic' ? '← Zurück zum Passwort-Login' : 'Lieber per Magic Link anmelden'}
-          </button>
+          </div>
         </div>
 
-        <p className="text-xs mt-4" style={{ color: 'var(--text-muted)' }}>
-          Kein Kreditkarte. Kein Abo. Einfach loslegen.
-        </p>
+        {/* Right: App preview mockup */}
+        <div className="flex-1 flex justify-center items-center">
+          <div className="relative">
+            {/* Phone mockup */}
+            <div className="w-64 rounded-[40px] p-3 shadow-2xl"
+                 style={{ background: '#1C1C1E', border: '6px solid #2C2C2E' }}>
+              <div className="w-full rounded-[30px] overflow-hidden" style={{ background: '#000', minHeight: 500 }}>
+                {/* Status bar */}
+                <div className="flex justify-between px-5 pt-3 pb-1">
+                  <span className="text-white text-xs font-semibold">9:41</span>
+                  <div className="flex gap-1 items-center">
+                    <div className="w-4 h-2 rounded-sm" style={{ background: '#FCB903' }} />
+                  </div>
+                </div>
+                {/* App header */}
+                <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid #2C2C2E' }}>
+                  <div className="flex items-center gap-2">
+                    <img src="/icon.png" alt="" width={22} height={22} style={{ borderRadius: 6 }} />
+                    <span className="text-white text-sm font-black">Duckit</span>
+                  </div>
+                  <div className="w-2 h-2 rounded-full" style={{ background: '#34D399' }} />
+                </div>
+                {/* Mock clips */}
+                {[
+                  { color: '#FCB903', group: 'Arbeit', text: 'Meeting-Notizen für Q3 Review...' },
+                  { color: '#0167DB', group: 'Lesen', text: 'https://example.com/artikel' },
+                  { color: '#10B981', group: 'Ideen', text: 'App-Idee: Erinnerungen mit KI' },
+                ].map((item, i) => (
+                  <div key={i} className="mx-3 mb-2 rounded-xl flex overflow-hidden"
+                       style={{ background: '#1C1C1E', border: '1px solid #2C2C2E' }}>
+                    <div className="w-1" style={{ background: item.color }} />
+                    <div className="p-2.5">
+                      <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs mb-1 font-bold"
+                           style={{ background: item.color + '33', color: item.color }}>
+                        {item.group}
+                      </div>
+                      <p className="text-white text-xs leading-relaxed">{item.text}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* Glow */}
+            <div className="absolute inset-0 rounded-[40px] blur-3xl opacity-20 -z-10"
+                 style={{ background: '#FCB903' }} />
+          </div>
+        </div>
       </section>
 
       {/* Features */}
-      <section className="max-w-4xl mx-auto px-6 py-12 grid grid-cols-1 sm:grid-cols-3 gap-5">
-        {[
-          { icon: <Globe size={20} />, title: 'Browser-Extension', desc: 'Rechtsklick auf markierten Text → sofort in Duckit. Chrome, Firefox & Safari.' },
-          { icon: <Smartphone size={20} />, title: 'iOS & Android', desc: 'Über den nativen Teilen-Button direkt clippen — ohne die App zu wechseln.' },
-          { icon: <Zap size={20} />, title: 'Realtime überall', desc: 'Clips erscheinen in unter einer Sekunde auf allen Geräten. Gleichzeitig.' },
-        ].map(f => (
-          <div key={f.title} className="rounded-2xl p-5"
-               style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)' }}>
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-4"
-                 style={{ background: 'var(--bg-subtle)', color: 'var(--accent-hover)', border: '1px solid var(--border)' }}>
-              {f.icon}
+      <section id="features" className="max-w-5xl mx-auto px-6 py-16">
+        <h2 className="text-3xl font-black text-center mb-3" style={{ color: 'var(--text)' }}>Alles was du brauchst</h2>
+        <p className="text-center text-sm mb-10" style={{ color: 'var(--text-muted)' }}>Ein Ort für alles — auf jedem Gerät</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[
+            { icon: '⚡️', title: 'Realtime-Sync', desc: 'Clips erscheinen in unter einer Sekunde auf allen Geräten gleichzeitig.' },
+            { icon: '📁', title: 'Gruppen & Farben', desc: 'Organisiere Clips in farbigen Gruppen — Arbeit, Privat, Ideen, alles.' },
+            { icon: '📅', title: 'Kalender-Integration', desc: 'Terminiere Clips direkt in deinen Kalender mit einem Tap.' },
+            { icon: '🌙', title: 'Dark Mode', desc: 'Echtes Schwarz auf iOS und Web — perfekt für nachts.' },
+            { icon: '🔍', title: 'Volltextsuche', desc: 'Finde jeden Clip sofort — nach Inhalt, Gruppe oder URL.' },
+            { icon: '✏️', title: 'Bearbeiten', desc: 'Clips nachträglich bearbeiten, Gruppe wechseln, Termin setzen.' },
+          ].map(f => (
+            <div key={f.title} className="rounded-2xl p-5"
+                 style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <div className="text-2xl mb-3">{f.icon}</div>
+              <h3 className="font-bold text-sm mb-1.5" style={{ color: 'var(--text)' }}>{f.title}</h3>
+              <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>{f.desc}</p>
             </div>
-            <h3 className="font-bold text-sm mb-1.5" style={{ color: 'var(--text)' }}>{f.title}</h3>
-            <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>{f.desc}</p>
-          </div>
-        ))}
+          ))}
+        </div>
+      </section>
+
+      {/* Apps & Extensions */}
+      <section id="apps" className="max-w-5xl mx-auto px-6 py-16">
+        <h2 className="text-3xl font-black text-center mb-3" style={{ color: 'var(--text)' }}>Überall verfügbar</h2>
+        <p className="text-center text-sm mb-10" style={{ color: 'var(--text-muted)' }}>Egal ob iPhone, Browser oder Desktop</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            {
+              icon: '🌐', title: 'Web-App', sub: 'Läuft im Browser',
+              desc: 'Voller Funktionsumfang — immer verfügbar, kein Download nötig.',
+              badge: 'Jetzt verfügbar', badgeColor: '#10B981',
+              action: null,
+            },
+            {
+              icon: '📱', title: 'iOS App', sub: 'iPhone & iPad',
+              desc: 'Native App mit Share Extension — direkt aus Safari, Maps oder jeder anderen App clipping.',
+              badge: 'In Entwicklung', badgeColor: '#FCB903',
+              action: null,
+            },
+            {
+              icon: '🤖', title: 'Android App', sub: 'Coming soon',
+              desc: 'Android-App mit Share Extension für alle Android-Geräte.',
+              badge: 'Bald verfügbar', badgeColor: '#8E8E93',
+              action: null,
+            },
+            {
+              icon: '🧩', title: 'Browser Extension', sub: 'Chrome · Firefox · Safari',
+              desc: 'Rechtsklick auf Text → sofort in Duckit speichern. Kein Copy-Paste mehr.',
+              badge: 'In Entwicklung', badgeColor: '#FCB903',
+              action: null,
+            },
+          ].map(app => (
+            <div key={app.title} className="rounded-2xl p-5 flex flex-col gap-3"
+                 style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <div className="text-3xl">{app.icon}</div>
+              <div>
+                <h3 className="font-bold text-sm" style={{ color: 'var(--text)' }}>{app.title}</h3>
+                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{app.sub}</p>
+              </div>
+              <p className="text-xs leading-relaxed flex-1" style={{ color: 'var(--text-muted)' }}>{app.desc}</p>
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold self-start"
+                   style={{ background: app.badgeColor + '22', color: app.badgeColor }}>
+                <div className="w-1.5 h-1.5 rounded-full" style={{ background: app.badgeColor }} />
+                {app.badge}
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="max-w-3xl mx-auto px-6 py-12 text-center">
-        <h2 className="text-2xl font-black mb-2" style={{ color: 'var(--text)' }}>Einfache Preise</h2>
-        <p className="text-sm mb-8" style={{ color: 'var(--text-muted)' }}>Starte kostenlos. Upgrade wenn du mehr brauchst.</p>
+      <section id="pricing" className="max-w-3xl mx-auto px-6 py-16 text-center">
+        <h2 className="text-3xl font-black mb-3" style={{ color: 'var(--text)' }}>Einfache Preise</h2>
+        <p className="text-sm mb-10" style={{ color: 'var(--text-muted)' }}>Starte kostenlos. Upgrade wenn du mehr brauchst.</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto">
           {[
             { name: 'Free', price: '0€', period: 'für immer', features: ['100 Clips', 'Web-App', 'Browser-Extension', '1 Gerät'], cta: 'Jetzt starten', highlight: false },
-            { name: 'Pro', price: '3€', period: 'pro Monat', features: ['Unbegrenzte Clips', 'Alle Plattformen', 'Unbegrenzte Geräte', 'Tags & Suche'], cta: 'Pro starten', highlight: true },
+            { name: 'Pro', price: '3€', period: 'pro Monat', features: ['Unbegrenzte Clips', 'Alle Plattformen', 'Unbegrenzte Geräte', 'Priorität-Support'], cta: 'Pro starten', highlight: true },
           ].map(plan => (
             <div key={plan.name} className="rounded-2xl p-6 text-left"
-                 style={plan.highlight ? { background: 'var(--accent)', border: '1px solid var(--accent)' } : { background: 'var(--bg-card)', border: '1px solid var(--border-card)' }}>
+                 style={plan.highlight
+                   ? { background: 'var(--accent)', border: '1px solid var(--accent)' }
+                   : { background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
               <p className="text-xs font-bold uppercase tracking-wider mb-1"
                  style={{ color: plan.highlight ? 'rgba(0,0,0,0.5)' : 'var(--text-muted)' }}>{plan.name}</p>
               <div className="flex items-baseline gap-1 mb-4">
@@ -230,9 +313,9 @@ export function LoginScreen({ onSignIn, onGoogleSignIn, onPasswordSignIn, onSign
                 ))}
               </ul>
               <button
-                onClick={() => document.querySelector('input[type=email]')?.scrollIntoView({ behavior: 'smooth' })}
-                className="w-full py-2.5 rounded-xl text-sm font-bold transition-colors"
-                style={plan.highlight ? { background: '#000', color: '#fff' } : { background: 'var(--accent)', color: 'var(--accent-fg)' }}>
+                onClick={() => document.querySelector<HTMLInputElement>('input[type=email]')?.focus()}
+                className="w-full py-2.5 rounded-xl text-sm font-bold"
+                style={plan.highlight ? { background: '#000', color: '#fff' } : { background: 'var(--accent)', color: '#000' }}>
                 {plan.cta}
               </button>
             </div>
@@ -241,7 +324,11 @@ export function LoginScreen({ onSignIn, onGoogleSignIn, onPasswordSignIn, onSign
       </section>
 
       <footer className="py-8 text-center text-xs" style={{ borderTop: '1px solid var(--border)', color: 'var(--text-muted)' }}>
-        🦆 © {new Date().getFullYear()} Duckit
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <img src="/icon.png" alt="" width={20} height={20} style={{ borderRadius: 5 }} />
+          <span className="font-bold" style={{ color: 'var(--text)' }}>Duckit</span>
+        </div>
+        © {new Date().getFullYear()} Duckit · Duck it away.
       </footer>
     </div>
   )

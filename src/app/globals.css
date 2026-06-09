@@ -2,34 +2,36 @@
 
 /* ── Light theme ── */
 :root {
-  --bg:          #fffbeb;
-  --bg-card:     #ffffff;
-  --bg-subtle:   #fef9c3;
-  --border:      #fde68a;
-  --border-card: #fef08a;
-  --text:        #1c1917;
-  --text-muted:  #78716c;
-  --accent:      #eab308;
-  --accent-fg:   #1c1917;
-  --accent-hover:#ca8a04;
-  --danger:      #ef4444;
-  --nav-bg:      #fefce8;
+  --bg:          #F5F5F7;
+  --bg-card:     #FFFFFF;
+  --bg-subtle:   #F5F5F7;
+  --border:      #E5E5EA;
+  --border-card: #E5E5EA;
+  --text:        #1C1C1E;
+  --text-muted:  #8E8E93;
+  --accent:      #FCB903;
+  --accent-fg:   #000000;
+  --accent-hover:#E5A800;
+  --accent-blue: #0167DB;
+  --danger:      #EF4444;
+  --nav-bg:      #FFFFFF;
 }
 
 /* ── Dark theme ── */
 .dark {
-  --bg:          #0f0f0f;
-  --bg-card:     #1a1a1a;
-  --bg-subtle:   #262626;
-  --border:      #2e2e2e;
-  --border-card: #2e2e2e;
-  --text:        #fafaf9;
-  --text-muted:  #a8a29e;
-  --accent:      #eab308;
+  --bg:          #000000;
+  --bg-card:     #1C1C1E;
+  --bg-subtle:   #2C2C2E;
+  --border:      #38383A;
+  --border-card: #38383A;
+  --text:        #FFFFFF;
+  --text-muted:  #8E8E93;
+  --accent:      #FCB903;
   --accent-fg:   #000000;
-  --accent-hover:#ca8a04;
-  --danger:      #f87171;
-  --nav-bg:      #141414;
+  --accent-hover:#E5A800;
+  --accent-blue: #0167DB;
+  --danger:      #F87171;
+  --nav-bg:      #1C1C1E;
 }
 
 body {

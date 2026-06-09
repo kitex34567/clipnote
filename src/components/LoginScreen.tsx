@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Zap, Globe, Smartphone, ArrowRight, Check, Eye, EyeOff, Chrome } from 'lucide-react'
+import { Zap, Globe, Smartphone, ArrowRight, Check, Eye, EyeOff } from 'lucide-react'
 import { ThemeToggle } from './ThemeToggle'
 
 type Mode = 'password' | 'magic' | 'signup'

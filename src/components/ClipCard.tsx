@@ -37,59 +37,57 @@ export function ClipCard({ clip, onDelete, onEdit }: Props) {
       <div className="flex-1 p-6">
         {/* Group badge */}
         {clip.group_name && (
-          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg text-xs font-bold mb-2"
-               style={{ background: accent + '22', color: accent }}>
-            <div className="w-1.5 h-1.5 rounded-full" style={{ background: accent }} />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg font-bold mb-3"
+               style={{ fontSize: 12, background: accent + '22', color: accent }}>
+            <div style={{ width: 7, height: 7, borderRadius: '50%', background: accent, flexShrink: 0 }} />
             {clip.group_name}
           </div>
         )}
 
         {/* Header */}
-        <div className="flex items-start justify-between gap-3 mb-2">
+        <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex items-center gap-2 min-w-0">
             <span style={{ color: 'var(--text-muted)' }}>
-              {clip.source_url ? <Link size={13} /> : <FileText size={13} />}
+              {clip.source_url ? <Link size={15} /> : <FileText size={15} />}
             </span>
             {clip.source_title && (
-              <span className="text-xs truncate font-medium" style={{ color: 'var(--text-muted)' }}>
+              <span className="truncate font-medium" style={{ fontSize: 13, color: 'var(--text-muted)' }}>
                 {clip.source_title}
               </span>
             )}
           </div>
-          <span className="shrink-0 text-xs" style={{ color: 'var(--text-muted)' }}>
+          <span className="shrink-0" style={{ fontSize: 12, color: 'var(--text-muted)' }}>
             {formatDistanceToNow(new Date(clip.created_at), { addSuffix: true, locale: de })}
           </span>
         </div>
 
         {/* Content */}
-        <p className="text-base leading-relaxed line-clamp-6 whitespace-pre-wrap break-words"
-           style={{ color: 'var(--text)' }}>
+        <p style={{ fontSize: 15, lineHeight: 1.7, color: 'var(--text)', whiteSpace: 'pre-wrap', wordBreak: 'break-word', display: '-webkit-box', WebkitLineClamp: 8, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
           {clip.content}
         </p>
 
         {/* Source URL */}
         {clip.source_url && (
           <a href={clip.source_url} target="_blank" rel="noopener noreferrer"
-             className="mt-2 flex items-center gap-1 text-xs truncate"
-             style={{ color: 'var(--accent-hover)' }}>
-            <ExternalLink size={11} />
+             className="flex items-center gap-1.5 truncate"
+             style={{ marginTop: 10, fontSize: 12, color: 'var(--accent-hover)' }}>
+            <ExternalLink size={13} />
             <span className="truncate">{clip.source_url}</span>
           </a>
         )}
 
         {/* Due date */}
         {clip.due_date && (
-          <p className="mt-1.5 text-xs font-semibold" style={{ color: accent }}>
-            📅 {new Date(clip.due_date).toLocaleDateString('de-DE', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+          <p style={{ marginTop: 8, fontSize: 13, fontWeight: 600, color: accent }}>
+            {new Date(clip.due_date).toLocaleDateString('de-DE', { day: '2-digit', month: 'short', year: 'numeric' })}
           </p>
         )}
 
         {/* Tags */}
         {clip.tags.length > 0 && (
-          <div className="mt-2 flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1.5" style={{ marginTop: 10 }}>
             {clip.tags.map(tag => (
-              <span key={tag} className="px-2 py-0.5 text-xs rounded-full font-medium"
-                    style={{ background: 'var(--bg-subtle)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}>
+              <span key={tag} style={{ padding: '3px 10px', fontSize: 12, borderRadius: 100, fontWeight: 500, background: 'var(--bg-subtle)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}>
                 {tag}
               </span>
             ))}
@@ -97,22 +95,19 @@ export function ClipCard({ clip, onDelete, onEdit }: Props) {
         )}
 
         {/* Actions */}
-        <div className="flex items-center gap-1.5 mt-3 pt-3" style={{ borderTop: '1px solid var(--border)' }}>
-          <button onClick={copy}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
-            style={{ background: 'var(--bg-subtle)', color: 'var(--text-muted)' }}>
-            {copied ? <Check size={12} style={{ color: 'var(--accent)' }} /> : <Copy size={12} />}
+        <div className="flex items-center gap-2" style={{ marginTop: 16, paddingTop: 14, borderTop: '1px solid var(--border)' }}>
+          <button onClick={copy} className="flex items-center gap-1.5 cursor-pointer transition-opacity hover:opacity-70"
+            style={{ padding: '7px 14px', borderRadius: 10, fontSize: 13, fontWeight: 600, background: 'var(--bg-subtle)', color: 'var(--text-muted)', border: 'none', fontFamily: 'inherit' }}>
+            {copied ? <Check size={14} style={{ color: 'var(--accent)' }} /> : <Copy size={14} />}
             {copied ? 'Kopiert' : 'Kopieren'}
           </button>
-          <button onClick={() => onEdit(clip)}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all"
-            style={{ background: 'var(--bg-subtle)', color: 'var(--text-muted)' }}>
-            <Pencil size={12} /> Bearbeiten
+          <button onClick={() => onEdit(clip)} className="flex items-center gap-1.5 cursor-pointer transition-opacity hover:opacity-70"
+            style={{ padding: '7px 14px', borderRadius: 10, fontSize: 13, fontWeight: 600, background: 'var(--bg-subtle)', color: 'var(--text-muted)', border: 'none', fontFamily: 'inherit' }}>
+            <Pencil size={14} /> Bearbeiten
           </button>
-          <button onClick={() => { setDeleting(true); onDelete(clip.id) }}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ml-auto"
-            style={{ background: '#fef2f2', color: '#ef4444' }}>
-            <Trash2 size={12} /> Löschen
+          <button onClick={() => { setDeleting(true); onDelete(clip.id) }} className="flex items-center gap-1.5 cursor-pointer transition-opacity hover:opacity-70 ml-auto"
+            style={{ padding: '7px 14px', borderRadius: 10, fontSize: 13, fontWeight: 600, background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: 'none', fontFamily: 'inherit' }}>
+            <Trash2 size={14} /> Löschen
           </button>
         </div>
       </div>

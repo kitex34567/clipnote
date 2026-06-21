@@ -34,7 +34,7 @@ export function ClipCard({ clip, onDelete, onEdit }: Props) {
       {/* Left color bar */}
       <div className="w-1 shrink-0" style={{ background: accent }} />
 
-      <div className="flex-1 p-4">
+      <div className="flex-1 p-6">
         {/* Group badge */}
         {clip.group_name && (
           <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg text-xs font-bold mb-2"
@@ -62,7 +62,7 @@ export function ClipCard({ clip, onDelete, onEdit }: Props) {
         </div>
 
         {/* Content */}
-        <p className="text-sm leading-relaxed line-clamp-4 whitespace-pre-wrap break-words"
+        <p className="text-base leading-relaxed line-clamp-6 whitespace-pre-wrap break-words"
            style={{ color: 'var(--text)' }}>
           {clip.content}
         </p>
